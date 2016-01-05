@@ -13,3 +13,7 @@ hs_err_pid*
 
 # IntelliJ IDEA Folder
 .idea
+
+# Repository specific
+*.log
+*.log.lck
