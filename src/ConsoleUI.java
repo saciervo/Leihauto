@@ -1,23 +1,13 @@
 import java.util.Scanner;
 import java.util.concurrent.Exchanger;
 
-public class MainMenu {
+public class ConsoleUI {
     private static Log log = new Log();
 
-    public static void show() {
-        System.out.println("Willkommen bei Leihauto!");
-        System.out.println("------------------------");
-        System.out.println("");
-        System.out.println("Wählen Sie eine der folgenden Aktionen:");
-        System.out.println("");
-        System.out.println("[1] Reservation suchen");       // Ermitteln der Verfügbarkeit (Suche für Reservation), K2
-        System.out.println("[2] Reservation bearbeiten");   // Durchführen der Reservation (Update Verfügbarkeit), K2
-        System.out.println("[3] Reservation buchen");       // Buchung der Reservation (Buchung Mitglied), K2
-        System.out.println("");
-        System.out.println("[0] Programm beenden");
+    public static void mainMenu() {
+        printMainMenu();
 
         Scanner scanner = new Scanner(System.in);
-
         boolean keepRunning = true;
         while (keepRunning) {
             String userInput = scanner.nextLine();
@@ -32,17 +22,31 @@ public class MainMenu {
             switch (userChoice) {
                 case 0:
                     keepRunning = false;    // Exit program
+                    System.out.println("Programm beenden...");
                     break;
                 case 1:
+                    System.out.println("Reservation suchen");
                     break;
                 case 2:
+                    System.out.println("Reservation bearbeiten");
                     break;
                 case 3:
+                    System.out.println("Reservation buchen");
                     break;
                 default:
                     System.out.println("Keine Aktion gefunden für Auswahl '" + userInput + "'");
                     break;
             }
         }
+    }
+
+    private static void printMainMenu() {
+        System.out.println("Wählen Sie eine der folgenden Aktionen:");
+        System.out.println("");
+        System.out.println("[1] Reservation suchen");       // Ermitteln der Verfügbarkeit (Suche für Reservation), K2
+        System.out.println("[2] Reservation bearbeiten");   // Durchführen der Reservation (Update Verfügbarkeit), K2
+        System.out.println("[3] Reservation buchen");       // Buchung der Reservation (Buchung Mitglied), K2
+        System.out.println("");
+        System.out.println("[0] Programm beenden");
     }
 }
