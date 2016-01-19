@@ -15,5 +15,10 @@ hs_err_pid*
 .idea
 
 # Repository specific
+
+## Log files
 *.log
 *.log.lck
+
+## Libraries
+!lib/**
