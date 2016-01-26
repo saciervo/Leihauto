@@ -7,8 +7,10 @@ import com.almworks.sqlite4java.SQLiteConnection;
 import com.almworks.sqlite4java.SQLiteConstants;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import infrastructure.Log;
 
 public class Database implements AutoCloseable {
+    private final Log log = Log.getInstance();
     private SQLiteConnection db;
     private String delimiter = "[,]";
 
@@ -26,17 +28,12 @@ public class Database implements AutoCloseable {
         }
     }
 
-    public boolean execute(String query) throws SQLiteException {
-        SQLiteStatement stmt = db.prepare(query);
-        boolean result = false;
+    public void execute(String query) {
         try {
-            if (stmt.step()) {
-                result = true;
-            }
-        } finally {
-            stmt.dispose();
+            db.exec(query);
+        } catch (SQLiteException e) {
+            log.error(e.getMessage());
         }
-        return result;
     }
 
     public String firstString(String query) throws SQLiteException {

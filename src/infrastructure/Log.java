@@ -1,32 +1,43 @@
+package infrastructure;
+
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.logging.*;
 
 public class Log {
+    private static Log ourInstance = new Log();
+
+    public static Log getInstance() {
+        return ourInstance;
+    }
 
     // get the global logger to configure it
-    private static Logger logger = Logger.getLogger("Leihauto");
+    private static Logger logger;
 
-    private static FileHandler fileTxt;
-    private static SimpleFormatter formatterTxt;
 
-    public Log() {
+    private Log() {
         try {
+            logger = Logger.getLogger("");
             logger.setLevel(Level.INFO);
-            fileTxt = new FileHandler("Leihauto.log");
+            FileHandler fileTxt = new FileHandler("Leihauto.log");
 
+            /*
             // suppress the logging output to the console
             Logger rootLogger = Logger.getLogger("");
             Handler[] handlers = rootLogger.getHandlers();
-            if (handlers[0] instanceof ConsoleHandler) {
+            if (handlers.length > 0 && handlers[0] instanceof ConsoleHandler) {
                 rootLogger.removeHandler(handlers[0]);
             }
+*/
+
+            logger.addHandler(new ConsoleHandler());
 
             // create a TXT formatter
-            formatterTxt = new SimpleFormatter();
+            SimpleFormatter formatterTxt = new SimpleFormatter();
             fileTxt.setFormatter(formatterTxt);
             logger.addHandler(fileTxt);
         } catch (IOException e) {
-            error(e.getStackTrace().toString());
+            e.getStackTrace();
         }
     }
 

@@ -1,8 +1,9 @@
+import infrastructure.Log;
+
 import java.util.Scanner;
-import java.util.concurrent.Exchanger;
 
 public class ConsoleUI {
-    private static Log log = new Log();
+    private final static Log log = Log.getInstance();
 
     public static void mainMenu() {
         printMainMenu();

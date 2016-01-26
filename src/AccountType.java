@@ -1,4 +1,4 @@
 public enum AccountType {
     Private,
-    Collective
+    Collective,
 }
