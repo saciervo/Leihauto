@@ -1,10 +1,12 @@
-package data;
+package infrastructure.sqlite.init;
 
-import infrastructure.Log;
+import infrastructure.logging.Log;
+import infrastructure.sqlite.DatabaseContext;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class DatabaseInitializer {
@@ -12,23 +14,24 @@ public class DatabaseInitializer {
     private final static Log log = Log.getInstance();
 
     public static void init() {
-        try (Database db = new Database()) {
+        try (DatabaseContext db = new DatabaseContext()) {
+
             // Initialize database schema
-            String query = getScript("schema.sql");
-            db.execute(query);
+            db.execute(getScript("schema.sql"));
 
             // Populate database with data
-            query = getScript("data.sql");
-            db.execute(query);
+            db.execute(getScript("data.sql"));
+
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Could not init database.");
         }
     }
 
     private static String getScript(String scriptName) {
         byte[] encoded = new byte[0];
         try {
-            encoded = Files.readAllBytes(Paths.get("scripts/" + scriptName));
+            Path path = Paths.get("scripts", scriptName);
+            encoded = Files.readAllBytes(path);
         } catch (IOException e) {
             e.printStackTrace();
         }

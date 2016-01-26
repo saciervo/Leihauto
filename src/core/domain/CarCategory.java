@@ -1,3 +1,5 @@
+package core.domain;
+
 public class CarCategory {
     private int id;
     private String name;

@@ -1,4 +1,4 @@
-import java.util.Date;
+package core.domain;
 
 public class Member {
     private Account account;

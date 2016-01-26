@@ -1,3 +1,5 @@
+package core.domain;
+
 public class Location {
     private int locationId;
     private String street;

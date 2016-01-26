@@ -1,4 +1,4 @@
-package data;
+package infrastructure.sqlite;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,18 +7,21 @@ import com.almworks.sqlite4java.SQLiteConnection;
 import com.almworks.sqlite4java.SQLiteConstants;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
-import infrastructure.Log;
+import core.ApplicationConstants;
+import infrastructure.logging.Log;
 
-public class Database implements AutoCloseable {
+public class DatabaseContext implements AutoCloseable {
     private final Log log = Log.getInstance();
     private SQLiteConnection db;
     private String delimiter = "[,]";
 
-    private static final String DB_PATH = System.getProperty("user.home") + "\\" + "leihauto.db";
-
-    public Database() throws SQLiteException {
-        db = new SQLiteConnection(new File(DB_PATH));
-        db.open(true);
+    public DatabaseContext() {
+        try {
+            db = new SQLiteConnection(new File(ApplicationConstants.DB_PATH));
+            db.open(true);
+        } catch (SQLiteException e) {
+            log.error("Error opening database: " + ApplicationConstants.DB_PATH);
+        }
     }
 
     @Override

@@ -1,4 +1,6 @@
-import infrastructure.Log;
+package ui;
+
+import infrastructure.logging.Log;
 
 import java.util.Scanner;
 

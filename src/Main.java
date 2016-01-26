@@ -1,4 +1,6 @@
-import data.DatabaseInitializer;
+import infrastructure.logging.Log;
+import infrastructure.sqlite.init.DatabaseInitializer;
+import ui.ConsoleUI;
 
 import java.util.logging.*;
 

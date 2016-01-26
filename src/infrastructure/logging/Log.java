@@ -1,25 +1,37 @@
-package infrastructure;
+package infrastructure.logging;
+
+import core.ApplicationConstants;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.*;
 
 public class Log {
-    private static Log ourInstance = new Log();
+    private static Log instance = new Log();
 
     public static Log getInstance() {
-        return ourInstance;
+        return instance;
     }
 
     // get the global logger to configure it
     private static Logger logger;
 
-
     private Log() {
         try {
             logger = Logger.getLogger("");
-            logger.setLevel(Level.INFO);
-            FileHandler fileTxt = new FileHandler("Leihauto.log");
+            logger.setLevel(Level.FINEST);
+
+            // Get logging directory and create it, if it does not exist
+            Path logPath = Paths.get(ApplicationConstants.LOG_PATH);
+            if (!Files.exists(logPath)) {
+                Files.createDirectory(logPath);
+            }
+
+            // Configure logfile
+            logPath = Paths.get(ApplicationConstants.LOG_PATH, "Leihauto.log");
+            FileHandler fileTxt = new FileHandler(logPath.toString());
 
             /*
             // suppress the logging output to the console
@@ -28,7 +40,7 @@ public class Log {
             if (handlers.length > 0 && handlers[0] instanceof ConsoleHandler) {
                 rootLogger.removeHandler(handlers[0]);
             }
-*/
+            */
 
             logger.addHandler(new ConsoleHandler());
 
@@ -45,7 +57,7 @@ public class Log {
         logger.log(level, msg);
     }
 
-    public void debug(String msg){
+    public void debug(String msg) {
         log(Level.FINE, msg);
     }
 

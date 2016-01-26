@@ -1,3 +1,5 @@
+package core.domain;
+
 public class Car {
     private int carId;
     private String plateNumber;
