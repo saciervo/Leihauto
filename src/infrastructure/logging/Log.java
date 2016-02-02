@@ -34,13 +34,13 @@ public class Log {
             logger.setLevel(Level.FINEST);
 
             // Get logging directory and create it, if it does not exist
-            Path logPath = Paths.get(AppSettings.LOG_PATH);
+            Path logPath = Paths.get(AppSettings.LogFilePath);
             if (!Files.exists(logPath)) {
                 Files.createDirectory(logPath);
             }
 
             // Configure logfile
-            logPath = Paths.get(AppSettings.LOG_PATH, "Leihauto.log");
+            logPath = Paths.get(AppSettings.LogFilePath, "Leihauto.log");
             FileHandler fileTxt = new FileHandler(logPath.toString());
 
             /*

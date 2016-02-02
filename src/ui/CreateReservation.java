@@ -35,8 +35,8 @@ public class CreateReservation {
 
     public CreateReservation() {
         $$$setupUI$$$();
-        startDateTextField.setText(AppSettings.DISPLAY_DATE_FORMAT.format(new Date()));
-        endDateTextField.setText(AppSettings.DISPLAY_DATE_FORMAT.format(new Date()));
+        startDateTextField.setText(AppSettings.DisplayDataFormat.format(new Date()));
+        endDateTextField.setText(AppSettings.DisplayDataFormat.format(new Date()));
 
         requestButton.addActionListener(e -> {
             requestButtonClick();
@@ -92,8 +92,8 @@ public class CreateReservation {
 
     private void requestButtonClick() {
         try {
-            Date startDate = AppSettings.DISPLAY_DATE_FORMAT.parse(startDateTextField.getText());
-            Date endDate = AppSettings.DISPLAY_DATE_FORMAT.parse(endDateTextField.getText());
+            Date startDate = AppSettings.DisplayDataFormat.parse(startDateTextField.getText());
+            Date endDate = AppSettings.DisplayDataFormat.parse(endDateTextField.getText());
 
             Car car = getSelectedCar();
             if (car.isAvailable(startDate, endDate)) {

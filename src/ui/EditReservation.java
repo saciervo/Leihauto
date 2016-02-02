@@ -4,7 +4,6 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import core.AppSettings;
 import core.domain.Car;
-import core.domain.Member;
 import core.domain.Reservation;
 import infrastructure.logging.Log;
 import ui.dialogs.CarNotAvailableDialog;
@@ -15,7 +14,6 @@ import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.Date;
-import java.util.List;
 
 public class EditReservation {
     private final static Log log = Log.getInstance();
@@ -45,8 +43,8 @@ public class EditReservation {
 
         memberTextField.setText(reservation.getMember().getName());
         carTextField.setText(reservation.getCar().getName());
-        startDateTextField.setText(AppSettings.DISPLAY_DATE_FORMAT.format(reservation.getStartDate()));
-        endDateTextField.setText(AppSettings.DISPLAY_DATE_FORMAT.format(reservation.getEndDate()));
+        startDateTextField.setText(AppSettings.DisplayDataFormat.format(reservation.getStartDate()));
+        endDateTextField.setText(AppSettings.DisplayDataFormat.format(reservation.getEndDate()));
 
         requestButton.addActionListener(e -> {
             requestButtonClick();
@@ -71,8 +69,8 @@ public class EditReservation {
 
     private void requestButtonClick() {
         try {
-            Date startDate = AppSettings.DISPLAY_DATE_FORMAT.parse(startDateTextField.getText());
-            Date endDate = AppSettings.DISPLAY_DATE_FORMAT.parse(endDateTextField.getText());
+            Date startDate = AppSettings.DisplayDataFormat.parse(startDateTextField.getText());
+            Date endDate = AppSettings.DisplayDataFormat.parse(endDateTextField.getText());
 
             Car car = reservation.getCar();
             if (car.isAvailable(startDate, endDate)) {

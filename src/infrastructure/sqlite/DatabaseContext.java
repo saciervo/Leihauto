@@ -22,10 +22,10 @@ public class DatabaseContext implements AutoCloseable {
      */
     public DatabaseContext() {
         try {
-            db = new SQLiteConnection(new File(AppSettings.DB_PATH));
+            db = new SQLiteConnection(new File(AppSettings.PhysicalDatabaseFile));
             db.open(true);
         } catch (SQLiteException ex) {
-            log.error(ex, String.format("Error opening database: %s", AppSettings.DB_PATH));
+            log.error(ex, String.format("Error opening database: %s", AppSettings.PhysicalDatabaseFile));
         }
     }
 

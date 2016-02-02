@@ -4,8 +4,6 @@ import core.AppSettings;
 import infrastructure.logging.Log;
 import infrastructure.sqlite.DatabaseContext;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -97,8 +95,8 @@ public class Car {
     }
 
     public boolean isAvailable(Date startDate, Date endDate) {
-        String startDateString = AppSettings.DB_DATE_FORMAT.format(startDate);
-        String endDateString = AppSettings.DB_DATE_FORMAT.format(endDate);
+        String startDateString = AppSettings.DatabaseDateFormat.format(startDate);
+        String endDateString = AppSettings.DatabaseDateFormat.format(endDate);
         try (DatabaseContext db = new DatabaseContext()) {
             Object obj = db.fetchFirst("SELECT id FROM reservations WHERE (startDate < ? AND endDate > ?) OR (startDate < ? AND endDate > ?)", startDateString, startDateString,endDateString,endDateString);
             return obj == null;

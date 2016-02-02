@@ -61,8 +61,8 @@ public class Reservation {
     @Override
     public String toString() {
         String item = String.format("%s to %s - %s reserved by %s",
-                AppSettings.DISPLAY_DATE_FORMAT.format(getStartDate()),
-                AppSettings.DISPLAY_DATE_FORMAT.format(getEndDate()),
+                AppSettings.DisplayDataFormat.format(getStartDate()),
+                AppSettings.DisplayDataFormat.format(getEndDate()),
                 getCar().getName(),
                 getMember().getName());
         return item;
@@ -73,8 +73,8 @@ public class Reservation {
             db.execute("INSERT INTO reservations (carId, memberId, startDate, endDate) VALUES (?, ?, ?, ?)",
                     Integer.toString(getCar().getCarId()),
                     Integer.toString(getMember().getMemberId()),
-                    AppSettings.DB_DATE_FORMAT.format(getStartDate()),
-                    AppSettings.DB_DATE_FORMAT.format(getEndDate()));
+                    AppSettings.DatabaseDateFormat.format(getStartDate()),
+                    AppSettings.DatabaseDateFormat.format(getEndDate()));
         } catch (Exception ex) {
             log.error(ex, "Could not connect to database.");
         }
@@ -83,8 +83,8 @@ public class Reservation {
     public void update() {
         try (DatabaseContext db = new DatabaseContext()) {
             db.execute("UPDATE reservations SET startDate = ?, endDate = ? WHERE id = ?",
-                    AppSettings.DB_DATE_FORMAT.format(getStartDate()),
-                    AppSettings.DB_DATE_FORMAT.format(getEndDate()),
+                    AppSettings.DatabaseDateFormat.format(getStartDate()),
+                    AppSettings.DatabaseDateFormat.format(getEndDate()),
                     Integer.toString(getId()));
         } catch (Exception ex) {
             log.error(ex, "Could not connect to database.");
@@ -147,8 +147,8 @@ public class Reservation {
         reservation.setCar(Car.find((int) obj[1]));
         reservation.setMember(Member.find((int) obj[2]));
         try {
-            reservation.setStartDate(AppSettings.DB_DATE_FORMAT.parse(obj[3].toString()));
-            reservation.setEndDate(AppSettings.DB_DATE_FORMAT.parse(obj[4].toString()));
+            reservation.setStartDate(AppSettings.DatabaseDateFormat.parse(obj[3].toString()));
+            reservation.setEndDate(AppSettings.DatabaseDateFormat.parse(obj[4].toString()));
         } catch (ParseException ex) {
             log.error(ex, "Could not convert StartDate and EndDate.");
         }
