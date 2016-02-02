@@ -51,7 +51,7 @@ public class DatabaseContext implements AutoCloseable {
             }
             db.exec("BEGIN TRANSACTION;");
             stmt.step();
-            db.exec("COMMIT;");
+            db.exec("COMMIT TRANSACTION;");
         } catch (Exception ex) {
             System.out.println("Fetch SQLiteException: " + ex.getMessage());
         } finally {

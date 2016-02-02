@@ -60,11 +60,11 @@ public class Reservation {
 
     @Override
     public String toString() {
-        String item = String.format("%s bis %s - %s (%s)",
+        String item = String.format("%s to %s - %s reserved by %s",
                 AppSettings.DISPLAY_DATE_FORMAT.format(getStartDate()),
                 AppSettings.DISPLAY_DATE_FORMAT.format(getEndDate()),
-                getMember().getName(),
-                getCar().getName());
+                getCar().getName(),
+                getMember().getName());
         return item;
     }
 

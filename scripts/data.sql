@@ -41,12 +41,12 @@ VALUES (4, 1, 3, 'Renault ZOE', 'ZH-845721');
 
 -- Reservations
 INSERT INTO reservations (id, carId, memberId, startDate, endDate)
-VALUES (1, 1, 4, '2016-01-26 15:00', '2016-01-26 22:00');
+VALUES (1, 1, 4, '2016-02-03 15:00', '2016-02-03 22:00');
 INSERT INTO reservations (id, carId, memberId, startDate, endDate)
-VALUES (2, 3, 1, '2016-01-24 10:00', '2016-01-24 12:00');
+VALUES (2, 3, 1, '2016-02-04 10:00', '2016-02-04 12:00');
 INSERT INTO reservations (id, carId, memberId, startDate, endDate)
-VALUES (3, 4, 2, '2016-01-23 22:00', '2016-01-24 20:00');
+VALUES (3, 4, 2, '2016-02-03 22:00', '2016-02-04 20:00');
 INSERT INTO reservations (id, carId, memberId, startDate, endDate)
-VALUES (4, 1, 3, '2016-01-26 07:30', '2016-01-26 19:00');
+VALUES (4, 1, 3, '2016-02-03 07:30', '2016-02-03 13:00');
 
 COMMIT TRANSACTION;
