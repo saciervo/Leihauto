@@ -9,10 +9,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * The database initializer.
+ */
 public class DatabaseInitializer {
 
     private final static Log log = Log.getInstance();
 
+    /**
+     * Start the initialization.
+     */
     public static void init() {
         try (DatabaseContext db = new DatabaseContext()) {
 

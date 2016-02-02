@@ -10,18 +10,26 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.*;
 
+/**
+ * Logging singleton class
+ */
 public class Log {
     private static Log instance = new Log();
 
+    /**
+     * Gets the instance.
+     *
+     * @return the (singleton) instance
+     */
     public static Log getInstance() {
         return instance;
     }
 
-    // get the global logger to configure it
     private static Logger logger;
 
     private Log() {
         try {
+            // Configure the global logger
             logger = Logger.getLogger("");
             logger.setLevel(Level.FINEST);
 
@@ -46,7 +54,7 @@ public class Log {
 
             logger.addHandler(new ConsoleHandler());
 
-            // create a TXT formatter
+            // Create a text formatter
             SimpleFormatter formatterTxt = new SimpleFormatter();
             fileTxt.setFormatter(formatterTxt);
             logger.addHandler(fileTxt);
@@ -59,22 +67,61 @@ public class Log {
         logger.log(level, msg);
     }
 
+    /**
+     * Log messages like executed sql queries
+     *
+     * @param msg the message
+     */
     public void debug(String msg) {
         log(Level.FINE, msg);
     }
 
-    public void info(String msg) {
-        log(Level.INFO, msg);
+    /**
+     * Log nrmal behavior like mail sent, user updated profile etc.
+     *
+     * @param message the message
+     */
+    public void info(String message) {
+        log(Level.INFO, message);
     }
 
-    public void warning(String msg) {
-        log(Level.WARNING, msg);
+    /**
+     * Log incorrect behavior but the application can continue
+     *
+     * @param message the message
+     */
+    public void warning(String message) {
+        log(Level.WARNING, message);
     }
 
-    public void error(Exception ex, String msg) {
+    /**
+     * Log application crashes / exceptions.
+     *
+     * @param exception the exception
+     */
+    public void error(Exception exception) {
+        error(exception, null);
+    }
+
+    /**
+     * Log application crashes / exceptions.
+     *
+     * @param exception the exception
+     * @param message   the message
+     */
+    public void error(Exception exception, String message) {
+        StringBuilder sb = new StringBuilder();
+        if (message != null) {
+            // Only include message in log if it is available
+            sb.append(message);
+            sb.append("\n");
+        }
+
+        // Write exception to a string
         StringWriter sw = new StringWriter();
-        ex.printStackTrace(new PrintWriter(sw));
-        String exceptionAsString = sw.toString();
-        log(Level.SEVERE, String.format("%s\n%s", msg, exceptionAsString));
+        exception.printStackTrace(new PrintWriter(sw));
+        sb.append(sw.toString());
+
+        log(Level.SEVERE, sb.toString());
     }
 }
