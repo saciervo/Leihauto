@@ -6,17 +6,20 @@ import core.domain.Member;
 import core.domain.Reservation;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 public class FindReservation {
     private JPanel panel;
+    private JScrollPane scrollPane;
     private JList reservationsList;
     private JButton filterButton;
     private JComboBox memberComboBox;
     private JComboBox carComboBox;
-    private JScrollPane scrollPane;
+    private JButton editButton;
 
     private List<Member> members;
     private List<Car> cars;
@@ -25,6 +28,14 @@ public class FindReservation {
         filterButton.addActionListener(e -> {
             List<Reservation> reservations = Reservation.findFiltered(getSelectedCarId(), getSelectedMemberId());
             loadReservations(reservations);
+        });
+        editButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditReservation.show((Reservation) reservationsList.getSelectedValue());
+                List<Reservation> reservations = Reservation.findFiltered(getSelectedCarId(), getSelectedMemberId());
+                loadReservations(reservations);
+            }
         });
     }
 
@@ -69,8 +80,12 @@ public class FindReservation {
             carComboBox.addItem(car.getName());
         }
 
-        ListModel model = new DefaultListModel<Reservation>();
-        reservationsList = new JList(model);
+        reservationsList = new JList(new DefaultListModel<Reservation>());
+        loadReservations();
+    }
+
+    private void loadReservations()
+    {
         loadReservations(Reservation.findAll());
     }
 

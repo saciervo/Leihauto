@@ -82,7 +82,7 @@ public class Car {
     public static List<Car> findAll() {
         try (DatabaseContext db = new DatabaseContext()) {
             List<Car> result = new ArrayList<>();
-            List<Object[]> fetchResult = db.fetch("SELECT id, parkingSpotLocationId, carCategoryId, name, plateNumber FROM cars", null);
+            List<Object[]> fetchResult = db.fetch("SELECT id, parkingSpotLocationId, carCategoryId, name, plateNumber FROM cars");
             for (Object[] obj : fetchResult) {
                 result.add(ConvertToCar(obj));
             }

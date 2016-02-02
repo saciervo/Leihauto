@@ -61,28 +61,6 @@ public class DatabaseContext implements AutoCloseable {
         }
     }
 
-    public String firstString(String query) throws SQLiteException {
-        return firstString(query);
-    }
-
-    public String firstString(String query, String... args) throws SQLiteException {
-        SQLiteStatement stmt = db.prepare(query + " LIMIT 1");
-        String value = null;
-        try {
-            if (args != null && args.length > 0) {
-                for (int i = 0; i < args.length; i++) {
-                    stmt.bind(i + 1, args[i]);
-                }
-            }
-            if (stmt.step()) {
-                value = stmt.columnString(0);
-            }
-        } finally {
-            stmt.dispose();
-        }
-        return value;
-    }
-
     public List<Object[]> fetch(String query, String ... args) {
         SQLiteStatement stmt = null;
         List<Object[]> result = new ArrayList<>();
@@ -119,29 +97,5 @@ public class DatabaseContext implements AutoCloseable {
             return obj.get(0);
         }
         return null;
-    }
-
-    public boolean updateSingleField(String query, String args) {
-        boolean success = false;
-        SQLiteStatement st = null;
-        try {
-            db.exec("BEGIN TRANSACTION; ");
-            st = db.prepare(query);
-            String[] parameters = args.split(delimiter);
-
-            for (int i = 0; i < parameters.length; i++) {
-                st.bind(i + 1, parameters[i]);
-            }
-            st.step();
-            db.exec("COMMIT;");
-            success = true;
-        } catch (SQLiteException e) {
-            System.err.println(e.getMessage());
-        } finally {
-            if (st != null) {
-                st.dispose();
-            }
-        }
-        return success;
     }
 }

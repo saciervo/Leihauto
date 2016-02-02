@@ -4,6 +4,7 @@ import core.AppSettings;
 import infrastructure.logging.Log;
 import infrastructure.sqlite.DatabaseContext;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -79,18 +80,23 @@ public class Reservation {
         }
     }
 
+    public void update() {
+        try (DatabaseContext db = new DatabaseContext()) {
+            db.execute("UPDATE reservations SET startDate = ?, endDate = ? WHERE id = ?",
+                    AppSettings.DB_DATE_FORMAT.format(getStartDate()),
+                    AppSettings.DB_DATE_FORMAT.format(getEndDate()),
+                    Integer.toString(getId()));
+        } catch (Exception ex) {
+            log.error(ex, "Could not connect to database.");
+        }
+    }
+
     public static List<Reservation> findAll() {
         try (DatabaseContext db = new DatabaseContext()) {
             List<Reservation> result = new ArrayList<>();
             List<Object[]> fetchResult = db.fetch("SELECT id, carId, memberId, startDate, endDate FROM reservations");
             for (Object[] obj : fetchResult) {
-                Reservation reservation = new Reservation();
-                reservation.setId((int) obj[0]);
-                reservation.setCar(Car.find((int) obj[1]));
-                reservation.setMember(Member.find((int) obj[2]));
-                reservation.setStartDate(AppSettings.DB_DATE_FORMAT.parse(obj[3].toString()));
-                reservation.setEndDate(AppSettings.DB_DATE_FORMAT.parse(obj[4].toString()));
-                result.add(reservation);
+                result.add(ConvertToReservation(obj));
             }
 
             return result;
@@ -124,13 +130,7 @@ public class Reservation {
             List<Reservation> result = new ArrayList<>();
             List<Object[]> fetchResult = db.fetch(query, args.toArray(new String[args.size()]));
             for (Object[] obj : fetchResult) {
-                Reservation reservation = new Reservation();
-                reservation.setId((int) obj[0]);
-                reservation.setCar(Car.find((int) obj[1]));
-                reservation.setMember(Member.find((int) obj[2]));
-                reservation.setStartDate(AppSettings.DB_DATE_FORMAT.parse(obj[3].toString()));
-                reservation.setEndDate(AppSettings.DB_DATE_FORMAT.parse(obj[4].toString()));
-                result.add(reservation);
+                result.add(ConvertToReservation(obj));
             }
 
             return result;
@@ -139,5 +139,19 @@ public class Reservation {
         }
 
         return null;
+    }
+
+    private static Reservation ConvertToReservation(Object[] obj) {
+        Reservation reservation = new Reservation();
+        reservation.setId((int) obj[0]);
+        reservation.setCar(Car.find((int) obj[1]));
+        reservation.setMember(Member.find((int) obj[2]));
+        try {
+            reservation.setStartDate(AppSettings.DB_DATE_FORMAT.parse(obj[3].toString()));
+            reservation.setEndDate(AppSettings.DB_DATE_FORMAT.parse(obj[4].toString()));
+        } catch (ParseException ex) {
+            log.error(ex, "Could not convert StartDate and EndDate.");
+        }
+        return reservation;
     }
 }

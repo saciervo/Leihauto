@@ -143,7 +143,7 @@ public class Member {
     public static List<Member> findAll() {
         try (DatabaseContext db = new DatabaseContext()) {
             List<Member> result = new ArrayList<>();
-            List<Object[]> fetchResult = db.fetch("SELECT id, accountId, name, defaultLocationId, emailAddress, pinCode, drivingLicenceNumber FROM members", null);
+            List<Object[]> fetchResult = db.fetch("SELECT id, accountId, name, defaultLocationId, emailAddress, pinCode, drivingLicenceNumber FROM members");
             for (Object[] obj : fetchResult) {
                 result.add(ConvertToMember(obj));
             }
