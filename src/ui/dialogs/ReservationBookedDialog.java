@@ -6,13 +6,17 @@ import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
+/**
+ * The dialog to show if a reservation has been booked.
+ */
 public class ReservationBookedDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
 
+    /**
+     * Instantiates a new dialog.
+     */
     public ReservationBookedDialog() {
         setContentPane(contentPane);
         setModal(true);
@@ -21,6 +25,9 @@ public class ReservationBookedDialog extends JDialog {
         buttonOK.addActionListener(e -> dispose());
     }
 
+    /**
+     * Show dialog.
+     */
     public static void showDialog() {
         ReservationBookedDialog dialog = new ReservationBookedDialog();
         dialog.pack();

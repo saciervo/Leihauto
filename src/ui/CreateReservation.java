@@ -17,12 +17,15 @@ import java.awt.event.FocusEvent;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * The GUI form to create a new reservation
+ */
 public class CreateReservation {
     private final static Log log = Log.getInstance();
 
     private JPanel panel;
-    private JComboBox memberComboBox;
-    private JComboBox carComboBox;
+    private JComboBox<String> memberComboBox;
+    private JComboBox<String> carComboBox;
     private JButton requestButton;
     private JTextField startDateTextField;
     private JTextField endDateTextField;
@@ -33,15 +36,28 @@ public class CreateReservation {
     private boolean readyToBookReservation = false;
     private static JFrame frame;
 
+    /**
+     * Show this GUI form.
+     */
+    public static void show() {
+        frame = new JFrame("CreateReservation");
+        frame.setContentPane(new CreateReservation().panel);
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    /**
+     * Instantiates a new GUI Form to create a new reservation.
+     */
     public CreateReservation() {
         $$$setupUI$$$();
         startDateTextField.setText(AppSettings.DisplayDataFormat.format(new Date()));
         endDateTextField.setText(AppSettings.DisplayDataFormat.format(new Date()));
 
-        requestButton.addActionListener(e -> {
-            requestButtonClick();
-        });
+        // Click event for the request button
+        requestButton.addActionListener(e -> requestButtonClick());
 
+        // Reset request button when user is about to edit a reservation date
         startDateTextField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -50,6 +66,7 @@ public class CreateReservation {
             }
         });
 
+        // Reset request button when user is about to edit a reservation date
         endDateTextField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -59,24 +76,17 @@ public class CreateReservation {
         });
     }
 
-    public static void show() {
-        frame = new JFrame("CreateReservation");
-        frame.setContentPane(new CreateReservation().panel);
-        frame.pack();
-        frame.setVisible(true);
-    }
-
     private void createUIComponents() {
         // Members drop down
         members = Member.findAll();
-        memberComboBox = new JComboBox();
+        memberComboBox = new JComboBox<>();
         for (Member member : members) {
             memberComboBox.addItem(member.getName());
         }
 
         // Cars drop down
         cars = Car.findAll();
-        carComboBox = new JComboBox();
+        carComboBox = new JComboBox<>();
         for (Car car : cars) {
             carComboBox.addItem(car.getName());
         }
@@ -97,7 +107,13 @@ public class CreateReservation {
 
             Car car = getSelectedCar();
             if (car.isAvailable(startDate, endDate)) {
-                if (readyToBookReservation) {
+                if (!readyToBookReservation) {
+                    // Restyle the request button to achieve double confirmation before booking a reservation
+                    readyToBookReservation = true;
+                    requestButton.setText("Book");
+                    requestButton.setBackground(Color.GREEN);
+                } else {
+                    // Book the requested reservation
                     Reservation reservation = new Reservation();
                     reservation.setMember(getSelectedMember());
                     reservation.setCar(car);
@@ -105,17 +121,15 @@ public class CreateReservation {
                     reservation.setEndDate(endDate);
                     reservation.create();
                     ReservationBookedDialog.showDialog();
+
+                    // The job is done. We do not need this form anymore
                     frame.dispose();
-                } else {
-                    readyToBookReservation = true;
-                    requestButton.setText("Book");
-                    requestButton.setBackground(Color.GREEN);
                 }
             } else {
                 CarNotAvailableDialog.showDialog();
             }
         } catch (Exception ex) {
-            log.error(ex, "Unexpected error!");
+            log.error(ex, "Unexpected exception!");
         }
     }
 

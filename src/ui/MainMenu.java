@@ -6,24 +6,34 @@ import infrastructure.sqlite.init.DatabaseInitializer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The Main menu GUI form.
+ */
 public class MainMenu {
     private JPanel panel;
     private JButton newReservationButton;
     private JButton findReservationButton;
     private JButton resetDatabaseButton;
 
+    /**
+     * Instantiates a new main menu.
+     */
     public MainMenu() {
         newReservationButton.addActionListener(e -> CreateReservation.show());
         findReservationButton.addActionListener(e -> FindReservation.show());
         resetDatabaseButton.addActionListener(e -> DatabaseInitializer.init());
     }
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
+        // Deactivate the sqlite4java logging because it is really really verbose.
         Logger.getLogger("com.almworks.sqlite4java").setLevel(Level.OFF);
 
         JFrame frame = new JFrame("MainMenu");

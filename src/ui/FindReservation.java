@@ -2,52 +2,56 @@ package ui;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import core.AppSettings;
 import core.domain.Car;
 import core.domain.Member;
 import core.domain.Reservation;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The GUI form for finding reservations
+ */
 public class FindReservation {
     private JPanel panel;
     private JScrollPane scrollPane;
-    private JList reservationsList;
+    private JList<Reservation> reservationsList;
     private JButton filterButton;
-    private JComboBox memberComboBox;
-    private JComboBox carComboBox;
+    private JComboBox<String> memberComboBox;
+    private JComboBox<String> carComboBox;
     private JButton editButton;
 
     private List<Member> members;
     private List<Car> cars;
 
+    /**
+     * Show this form
+     */
+    public static void show() {
+        JFrame frame = new JFrame("Find reservation");
+        frame.setContentPane(new FindReservation().panel);
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    /**
+     * Instantiates a new Find reservation.
+     */
     public FindReservation() {
         $$$setupUI$$$();
         filterButton.addActionListener(e -> {
             List<Reservation> reservations = Reservation.findFiltered(getSelectedCarId(), getSelectedMemberId());
             loadReservations(reservations);
         });
-        editButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                EditReservation.show((Reservation) reservationsList.getSelectedValue());
-                List<Reservation> reservations = Reservation.findFiltered(getSelectedCarId(), getSelectedMemberId());
-                loadReservations(reservations);
-            }
-        });
-    }
+        editButton.addActionListener(e -> {
+            EditReservation.show(reservationsList.getSelectedValue());
 
-    public static void show() {
-        JFrame frame = new JFrame("Find reservation");
-        frame.setContentPane(new FindReservation().panel);
-        frame.pack();
-        frame.setVisible(true);
+            // Does not work yet
+            List<Reservation> reservations = Reservation.findFiltered(getSelectedCarId(), getSelectedMemberId());
+            loadReservations(reservations);
+        });
     }
 
 
@@ -70,7 +74,7 @@ public class FindReservation {
     private void createUIComponents() {
         // Members drop down
         members = Member.findAll();
-        memberComboBox = new JComboBox();
+        memberComboBox = new JComboBox<>();
         memberComboBox.addItem("- None -");
         for (Member member : members) {
             memberComboBox.addItem(member.getName());
@@ -78,13 +82,14 @@ public class FindReservation {
 
         // Cars drop down
         cars = Car.findAll();
-        carComboBox = new JComboBox();
+        carComboBox = new JComboBox<>();
         carComboBox.addItem("- None -");
         for (Car car : cars) {
             carComboBox.addItem(car.getName());
         }
 
-        reservationsList = new JList(new DefaultListModel<Reservation>());
+        // Initialize JList
+        reservationsList = new JList<>(new DefaultListModel<>());
         loadReservations();
     }
 

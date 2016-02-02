@@ -15,12 +15,13 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.Date;
 
+/**
+ * GUI form to edit a reservation.
+ */
 public class EditReservation {
     private final static Log log = Log.getInstance();
 
     private JPanel panel;
-    private JComboBox memberComboBox;
-    private JComboBox carComboBox;
     private JButton requestButton;
     private JTextField memberTextField;
     private JTextField carTextField;
@@ -31,6 +32,11 @@ public class EditReservation {
     private boolean readyToBookReservation = false;
     private static JFrame frame;
 
+    /**
+     * Show this form.
+     *
+     * @param reservation the reservation
+     */
     public static void show(Reservation reservation) {
         frame = new JFrame("EditReservation");
         frame.setContentPane(new EditReservation(reservation).panel);
@@ -38,6 +44,11 @@ public class EditReservation {
         frame.setVisible(true);
     }
 
+    /**
+     * Instantiates a new form
+     *
+     * @param reservation the reservation
+     */
     public EditReservation(Reservation reservation) {
         this.reservation = reservation;
 

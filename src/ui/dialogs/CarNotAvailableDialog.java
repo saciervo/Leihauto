@@ -9,10 +9,16 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * The dialog to show when the car is not available to reserve.
+ */
 public class CarNotAvailableDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
 
+    /**
+     * Instantiates a new dialog.
+     */
     public CarNotAvailableDialog() {
         setContentPane(contentPane);
         setModal(true);
@@ -21,6 +27,9 @@ public class CarNotAvailableDialog extends JDialog {
         buttonOK.addActionListener(e -> dispose());
     }
 
+    /**
+     * Show dialog.
+     */
     public static void showDialog() {
         CarNotAvailableDialog dialog = new CarNotAvailableDialog();
         dialog.pack();
