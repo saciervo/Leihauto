@@ -8,7 +8,11 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
+/**
+ * The Reservation. A car booking by a member is represented by a reservation.
+ */
 public class Reservation {
     private final static Log log = Log.getInstance();
 
@@ -60,26 +64,31 @@ public class Reservation {
 
     @Override
     public String toString() {
-        String item = String.format("%s to %s - %s reserved by %s",
+        return String.format("%s to %s - %s reserved by %s",
                 AppSettings.DisplayDataFormat.format(getStartDate()),
                 AppSettings.DisplayDataFormat.format(getEndDate()),
                 getCar().getName(),
                 getMember().getName());
-        return item;
     }
 
+    /**
+     * Creates a new reservation in the database.
+     */
     public void create() {
         try (DatabaseContext db = new DatabaseContext()) {
             db.execute("INSERT INTO reservations (carId, memberId, startDate, endDate) VALUES (?, ?, ?, ?)",
-                    Integer.toString(getCar().getCarId()),
-                    Integer.toString(getMember().getMemberId()),
+                    Integer.toString(getCar().getId()),
+                    Integer.toString(getMember().getId()),
                     AppSettings.DatabaseDateFormat.format(getStartDate()),
                     AppSettings.DatabaseDateFormat.format(getEndDate()));
         } catch (Exception ex) {
-            log.error(ex, "Could not connect to database.");
+            log.error(ex, "Could not create reservation.");
         }
     }
 
+    /**
+     * Updates the reservation in the database.
+     */
     public void update() {
         try (DatabaseContext db = new DatabaseContext()) {
             db.execute("UPDATE reservations SET startDate = ?, endDate = ? WHERE id = ?",
@@ -87,30 +96,35 @@ public class Reservation {
                     AppSettings.DatabaseDateFormat.format(getEndDate()),
                     Integer.toString(getId()));
         } catch (Exception ex) {
-            log.error(ex, "Could not connect to database.");
+            log.error(ex, "Could not update the reservation.");
         }
     }
 
+    /**
+     * Find all reservations.
+     *
+     * @return the reservations
+     */
     public static List<Reservation> findAll() {
         try (DatabaseContext db = new DatabaseContext()) {
-            List<Reservation> result = new ArrayList<>();
-            List<Object[]> fetchResult = db.fetch("SELECT id, carId, memberId, startDate, endDate FROM reservations");
-            for (Object[] obj : fetchResult) {
-                result.add(ConvertToReservation(obj));
-            }
-
-            return result;
+            return db.fetch("SELECT id, carId, memberId, startDate, endDate FROM reservations").stream().map(Reservation::ConvertToReservation).collect(Collectors.toList());
         } catch (Exception ex) {
-            log.error(ex, "Could not connect to database.");
+            log.error(ex, "Could not get reservations.");
         }
-
         return null;
-
     }
 
+    /**
+     * Finds all reservations filtered by the specified filters.
+     *
+     * @param selectedCarId    the selected car id
+     * @param selectedMemberId the selected member id
+     * @return the reservations
+     */
     public static List<Reservation> findFiltered(Integer selectedCarId, Integer selectedMemberId) {
         String query = "SELECT id, carId, memberId, startDate, endDate FROM reservations WHERE ";
 
+        // Concatenate the filtering SQL query
         ArrayList<String> args = new ArrayList<>();
         if (selectedCarId != null) {
             query += "carId = ?";
@@ -127,13 +141,10 @@ public class Reservation {
         }
 
         try (DatabaseContext db = new DatabaseContext()) {
-            List<Reservation> result = new ArrayList<>();
-            List<Object[]> fetchResult = db.fetch(query, args.toArray(new String[args.size()]));
-            for (Object[] obj : fetchResult) {
-                result.add(ConvertToReservation(obj));
-            }
-
-            return result;
+            return db.fetch(query, args.toArray(new String[args.size()]))
+                    .stream()
+                    .map(Reservation::ConvertToReservation)
+                    .collect(Collectors.toList());
         } catch (Exception ex) {
             log.error(ex, "Could not connect to database.");
         }

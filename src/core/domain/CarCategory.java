@@ -3,6 +3,9 @@ package core.domain;
 import infrastructure.logging.Log;
 import infrastructure.sqlite.DatabaseContext;
 
+/**
+ * The car category. Used to describe and categorize a car a bit further
+ */
 public class CarCategory {
     private final static Log log = Log.getInstance();
 
@@ -34,6 +37,12 @@ public class CarCategory {
         this.basicConfiguration = basicConfiguration;
     }
 
+    /**
+     * Finds the  car category by id.
+     *
+     * @param id the id
+     * @return the car category
+     */
     public static CarCategory find(int id) {
         try (DatabaseContext db = new DatabaseContext()) {
             Object[] obj = db.fetchFirst("SELECT id, name, basicConfiguration FROM carCategories WHERE id = ?", Integer.toString(id));

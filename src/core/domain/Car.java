@@ -7,22 +7,26 @@ import infrastructure.sqlite.DatabaseContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
+/**
+ * The car. Represents a car sharing vehicle evey customer can drive.
+ */
 public class Car {
     private final static Log log = Log.getInstance();
 
-    private int carId;
+    private int id;
     private Location parkingSpot;
     private CarCategory category;
     private String name;
     private String plateNumber;
 
-    public int getCarId() {
-        return carId;
+    public int getId() {
+        return id;
     }
 
-    public void setCarId(int carId) {
-        this.carId = carId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Location getParkingSpot() {
@@ -59,7 +63,7 @@ public class Car {
 
     private static Car ConvertToCar(Object[] obj) {
         Car car = new Car();
-        car.setCarId((int) obj[0]);
+        car.setId((int) obj[0]);
         car.setParkingSpot(Location.find((int) obj[1]));
         car.setCategory(CarCategory.find((int) obj[2]));
         car.setName(obj[3].toString());
@@ -67,6 +71,12 @@ public class Car {
         return car;
     }
 
+    /**
+     * Find car by id.
+     *
+     * @param id the id
+     * @return the car
+     */
     public static Car find(int id) {
         try (DatabaseContext db = new DatabaseContext()) {
             Object[] obj = db.fetchFirst("SELECT id, parkingSpotLocationId, carCategoryId, name, plateNumber FROM cars WHERE id = ?", Integer.toString(id));
@@ -77,15 +87,17 @@ public class Car {
         return null;
     }
 
+    /**
+     * Find all cars.
+     *
+     * @return a list of cars.
+     */
     public static List<Car> findAll() {
         try (DatabaseContext db = new DatabaseContext()) {
-            List<Car> result = new ArrayList<>();
-            List<Object[]> fetchResult = db.fetch("SELECT id, parkingSpotLocationId, carCategoryId, name, plateNumber FROM cars");
-            for (Object[] obj : fetchResult) {
-                result.add(ConvertToCar(obj));
-            }
-
-            return result;
+            return db.fetch("SELECT id, parkingSpotLocationId, carCategoryId, name, plateNumber FROM cars")
+                    .stream()
+                    .map(Car::ConvertToCar)
+                    .collect(Collectors.toList());
         } catch (Exception ex) {
             log.error(ex, "Could not connect to database.");
         }
@@ -94,6 +106,13 @@ public class Car {
 
     }
 
+    /**
+     * Checks if a car is available at the specified .
+     *
+     * @param startDate the start date
+     * @param endDate   the end date
+     * @return True if the car is available. False if the car ist not ready book.
+     */
     public boolean isAvailable(Date startDate, Date endDate) {
         String startDateString = AppSettings.DatabaseDateFormat.format(startDate);
         String endDateString = AppSettings.DatabaseDateFormat.format(endDate);

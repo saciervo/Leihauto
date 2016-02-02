@@ -3,22 +3,25 @@ package core.domain;
 import infrastructure.logging.Log;
 import infrastructure.sqlite.DatabaseContext;
 
+/**
+ * The account. It is used to bill the members for their journeys.
+ */
 public class Account {
     private final static Log log = Log.getInstance();
 
-    private int accountId;
+    private int id;
     private AccountType accountType;
     private String name;
     private String street;
     private String zipCode;
     private String city;
 
-    public int getAccountId() {
-        return accountId;
+    public int getId() {
+        return id;
     }
 
-    public void setAccountId(int accountId) {
-        this.accountId = accountId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public AccountType getAccountType() {
@@ -36,7 +39,6 @@ public class Account {
     public void setName(String name) {
         this.name = name;
     }
-
 
     public String getStreet() {
         return street;
@@ -62,11 +64,17 @@ public class Account {
         this.city = city;
     }
 
+    /**
+     * Find an account by its ID.
+     *
+     * @param id the id
+     * @return the account
+     */
     public static Account find(int id) {
         try (DatabaseContext db = new DatabaseContext()) {
             Object[] obj = db.fetchFirst("SELECT id, type, name, street, zipCode, city FROM accounts WHERE id = ?", Integer.toString(id));
             Account account = new Account();
-            account.setAccountId((int) obj[0]);
+            account.setId((int) obj[0]);
             account.setAccountType(AccountType.values()[(int) obj[1]]);
             account.setName(obj[2].toString());
             account.setStreet(obj[3].toString());

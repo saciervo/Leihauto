@@ -58,7 +58,7 @@ public class FindReservation {
     private Integer getSelectedCarId() {
         Optional<Car> car = cars.stream().filter(x -> x.getName() == carComboBox.getSelectedItem()).findFirst();
         if (car.isPresent()) {
-            return car.get().getCarId();
+            return car.get().getId();
         }
         return null;
     }
@@ -66,7 +66,7 @@ public class FindReservation {
     private Integer getSelectedMemberId() {
         Optional<Member> member = members.stream().filter(x -> x.getName() == memberComboBox.getSelectedItem()).findFirst();
         if (member.isPresent()) {
-            return member.get().getMemberId();
+            return member.get().getId();
         }
         return null;
     }

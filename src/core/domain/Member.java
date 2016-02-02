@@ -5,11 +5,15 @@ import infrastructure.sqlite.DatabaseContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+/**
+ * The Member. Every person who wants to drive a car is a member.
+ */
 public class Member {
     private final static Log log = Log.getInstance();
 
-    private int memberId;
+    private int id;
     private Account account;
     private String name;
     private String postalAddress;
@@ -22,12 +26,12 @@ public class Member {
     private String pinCode;
     private Location defaultLocation;
 
-    public int getMemberId() {
-        return memberId;
+    public int getId() {
+        return id;
     }
 
-    public void setMemberId(int memberId) {
-        this.memberId = memberId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Account getAccount() {
@@ -120,7 +124,7 @@ public class Member {
 
     private static Member ConvertToMember(Object[] obj) {
         Member member = new Member();
-        member.setMemberId((int) obj[0]);
+        member.setId((int) obj[0]);
         member.setAccount(Account.find((int) obj[1]));
         member.setName(obj[2].toString());
         member.setDefaultLocation(Location.find((int) obj[3]));
@@ -130,6 +134,12 @@ public class Member {
         return member;
     }
 
+    /**
+     * Find the member by id.
+     *
+     * @param id the id
+     * @return the member
+     */
     public static Member find(int id) {
         try (DatabaseContext db = new DatabaseContext()) {
             Object[] obj = db.fetchFirst("SELECT id, accountId, name, defaultLocationId, emailAddress, pinCode, drivingLicenceNumber FROM members WHERE id = ?", Integer.toString(id));
@@ -140,15 +150,17 @@ public class Member {
         return null;
     }
 
+    /**
+     * Find all members.
+     *
+     * @return the members
+     */
     public static List<Member> findAll() {
         try (DatabaseContext db = new DatabaseContext()) {
-            List<Member> result = new ArrayList<>();
-            List<Object[]> fetchResult = db.fetch("SELECT id, accountId, name, defaultLocationId, emailAddress, pinCode, drivingLicenceNumber FROM members");
-            for (Object[] obj : fetchResult) {
-                result.add(ConvertToMember(obj));
-            }
-
-            return result;
+            return db.fetch("SELECT id, accountId, name, defaultLocationId, emailAddress, pinCode, drivingLicenceNumber FROM members")
+                    .stream()
+                    .map(Member::ConvertToMember)
+                    .collect(Collectors.toList());
         } catch (Exception ex) {
             log.error(ex, "Could not connect to database.");
         }

@@ -38,8 +38,8 @@ public class DatabaseInitializer {
         try {
             Path path = Paths.get("scripts", scriptName);
             encoded = Files.readAllBytes(path);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            log.error(ex, "Could not read script");
         }
         return new String(encoded, Charset.forName("UTF-8"));
     }

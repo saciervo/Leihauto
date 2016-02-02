@@ -3,21 +3,24 @@ package core.domain;
 import infrastructure.logging.Log;
 import infrastructure.sqlite.DatabaseContext;
 
+/**
+ * The Location. Used to indicate where a car is parked.
+ */
 public class Location {
     private final static Log log = Log.getInstance();
 
-    private int locationId;
+    private int id;
     private String street;
     private String zipCode;
     private String city;
     private int parkingSpaces;
 
-    public int getLocationId() {
-        return locationId;
+    public int getId() {
+        return id;
     }
 
-    public void setLocationId(int locationId) {
-        this.locationId = locationId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getStreet() {
@@ -52,11 +55,17 @@ public class Location {
         this.parkingSpaces = parkingSpaces;
     }
 
+    /**
+     * Find the location by id.
+     *
+     * @param id the id
+     * @return the location
+     */
     public static Location find(int id) {
         try (DatabaseContext db = new DatabaseContext()) {
             Object[] obj = db.fetchFirst("SELECT id, street, zipCode, city, amountParkingSpaces FROM locations WHERE id = ?", Integer.toString(id));
             Location location = new Location();
-            location.setLocationId((int) obj[0]);
+            location.setId((int) obj[0]);
             location.setStreet(obj[1].toString());
             location.setZipCode(obj[2].toString());
             location.setCity(obj[3].toString());
