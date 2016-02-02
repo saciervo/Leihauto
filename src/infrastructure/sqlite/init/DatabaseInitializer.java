@@ -35,6 +35,6 @@ public class DatabaseInitializer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new String(encoded, Charset.defaultCharset());
+        return new String(encoded, Charset.forName("UTF-8"));
     }
 }

@@ -23,5 +23,6 @@ hs_err_pid*
 ## Libraries
 !lib/**
 
-## Data directory
+## Data & publish directories
 data/**
+publish/**
