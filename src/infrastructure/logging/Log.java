@@ -1,8 +1,10 @@
 package infrastructure.logging;
 
-import core.ApplicationConstants;
+import core.AppSettings;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,13 +26,13 @@ public class Log {
             logger.setLevel(Level.FINEST);
 
             // Get logging directory and create it, if it does not exist
-            Path logPath = Paths.get(ApplicationConstants.LOG_PATH);
+            Path logPath = Paths.get(AppSettings.LOG_PATH);
             if (!Files.exists(logPath)) {
                 Files.createDirectory(logPath);
             }
 
             // Configure logfile
-            logPath = Paths.get(ApplicationConstants.LOG_PATH, "Leihauto.log");
+            logPath = Paths.get(AppSettings.LOG_PATH, "Leihauto.log");
             FileHandler fileTxt = new FileHandler(logPath.toString());
 
             /*
@@ -69,7 +71,10 @@ public class Log {
         log(Level.WARNING, msg);
     }
 
-    public void error(String msg) {
-        log(Level.SEVERE, msg);
+    public void error(Exception ex, String msg) {
+        StringWriter sw = new StringWriter();
+        ex.printStackTrace(new PrintWriter(sw));
+        String exceptionAsString = sw.toString();
+        log(Level.SEVERE, String.format("%s\n%s", msg, exceptionAsString));
     }
 }

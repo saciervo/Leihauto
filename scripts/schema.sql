@@ -1,4 +1,5 @@
 -- noinspection SqlDialectInspectionForFile
+
 DROP TABLE IF EXISTS accounts;
 CREATE TABLE accounts (
     id      INTEGER       PRIMARY KEY AUTOINCREMENT,

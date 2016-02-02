@@ -2,12 +2,12 @@ package infrastructure.sqlite;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.almworks.sqlite4java.SQLiteConnection;
-import com.almworks.sqlite4java.SQLiteConstants;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
-import core.ApplicationConstants;
+import core.AppSettings;
 import infrastructure.logging.Log;
 
 public class DatabaseContext implements AutoCloseable {
@@ -17,10 +17,10 @@ public class DatabaseContext implements AutoCloseable {
 
     public DatabaseContext() {
         try {
-            db = new SQLiteConnection(new File(ApplicationConstants.DB_PATH));
+            db = new SQLiteConnection(new File(AppSettings.DB_PATH));
             db.open(true);
-        } catch (SQLiteException e) {
-            log.error("Error opening database: " + ApplicationConstants.DB_PATH);
+        } catch (SQLiteException ex) {
+            log.error(ex, "Error opening database: " + AppSettings.DB_PATH);
         }
     }
 
@@ -35,22 +35,43 @@ public class DatabaseContext implements AutoCloseable {
         try {
             db.exec(query);
         } catch (SQLiteException e) {
-            log.error(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void execute(String query, String... args) {
+        SQLiteStatement stmt = null;
+        try {
+            stmt = db.prepare(query);
+            String[] parameters;
+            if (args != null && args.length > 0) {
+                for (int i = 0; i < args.length; i++) {
+                    stmt.bind(i + 1, args[i]);
+                }
+            }
+            db.exec("BEGIN TRANSACTION;");
+            stmt.step();
+            db.exec("COMMIT;");
+        } catch (Exception ex) {
+            System.out.println("Fetch SQLiteException: " + ex.getMessage());
+        } finally {
+            if (stmt != null) {
+                stmt.dispose();
+            }
         }
     }
 
     public String firstString(String query) throws SQLiteException {
-        return firstString(query, null);
+        return firstString(query);
     }
 
-    public String firstString(String query, String args) throws SQLiteException {
+    public String firstString(String query, String... args) throws SQLiteException {
         SQLiteStatement stmt = db.prepare(query + " LIMIT 1");
         String value = null;
         try {
-            if (args != null) {
-                String[] parameters = args.split(delimiter);
-                for (int i = 0; i < parameters.length; i++) {
-                    stmt.bind(i + 1, parameters[i]);
+            if (args != null && args.length > 0) {
+                for (int i = 0; i < args.length; i++) {
+                    stmt.bind(i + 1, args[i]);
                 }
             }
             if (stmt.step()) {
@@ -62,80 +83,42 @@ public class DatabaseContext implements AutoCloseable {
         return value;
     }
 
-    public String selectSingle(String query, String args) throws SQLiteException {
-        SQLiteStatement st = db.prepare(query);
-        String[] parameters = args.split(delimiter);
-        String result = null;
+    public List<Object[]> fetch(String query, String ... args) {
+        SQLiteStatement stmt = null;
+        List<Object[]> result = new ArrayList<>();
         try {
-            for (int i = 0; i < parameters.length; i++) {
-                st.bind(i + 1, parameters[i]);
-            }
-            int columnsCount = st.columnCount();
-            if (columnsCount > 1) {
-                System.err.println("Error: More than a single column!");
-                return null;
-            }
-
-            if (st.step()) {
-                int type = st.columnType(0);
-
-                switch (type) {
-                    case SQLiteConstants.SQLITE_INTEGER:
-                        result = String.valueOf(st.columnInt(0));
-                    case SQLiteConstants.SQLITE_TEXT:
-                        result = st.columnString(0);
-                    default:
-                        break;
+            stmt = db.prepare(query);
+            if (args != null && args.length > 0) {
+                for (int i = 0; i < args.length; i++) {
+                    stmt.bind(i + 1, args[i]);
                 }
             }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
+            while (stmt.step()) {
+                if (stmt.hasRow()) {
+                    int count = stmt.columnCount();
+                    ArrayList columns = new ArrayList<>();
+                    for (int column = 0; column < count; column++) {
+                        columns.add(stmt.columnValue(column));
+                    }
+                    result.add(columns.toArray());
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println("Fetch SQLiteException: " + ex.getMessage());
         } finally {
-            st.dispose();
+            if (stmt != null) {
+                stmt.dispose();
+            }
         }
         return result;
     }
 
-    public ArrayList selectMany(String query, String args) {
-        ArrayList result = new ArrayList();
-        SQLiteStatement st = null;
-        try {
-            st = db.prepare(query);
-            String[] parameters;
-            if (!args.isEmpty() && args != null) {
-                parameters = args.split(delimiter);
-                for (int i = 0; i < parameters.length; i++) {
-                    st.bind(i + 1, parameters[i]);
-                }
-            }
-
-            int columnsCount = st.columnCount();
-            if (columnsCount > 1) {
-                System.err.println("Error: More than a single column!");
-                return null;
-            }
-            while (st.step()) {
-                int type = st.columnType(0);
-
-                switch (type) {
-                    case SQLiteConstants.SQLITE_INTEGER:
-                        result.add(String.valueOf(st.columnInt(0)));
-                        break;
-
-                    case SQLiteConstants.SQLITE_TEXT:
-                        result.add(st.columnString(0));
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        } finally {
-            st.dispose();
+    public Object[] fetchFirst(String query, String ... args) {
+        List<Object[]> obj = fetch(query + " LIMIT 1", args);
+        if (obj.size() > 0) {
+            return obj.get(0);
         }
-        return result;
+        return null;
     }
 
     public boolean updateSingleField(String query, String args) {

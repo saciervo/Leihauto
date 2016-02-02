@@ -22,8 +22,8 @@ public class DatabaseInitializer {
             // Populate database with data
             db.execute(getScript("data.sql"));
 
-        } catch (Exception e) {
-            log.error("Could not init database.");
+        } catch (Exception ex) {
+            log.error(ex, "Could not init database.");
         }
     }
 

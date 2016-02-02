@@ -20,8 +20,7 @@ VALUES (1, 1, 'Sandro Hirscher', NULL, 1, 'sandro@hirscher.ch', '028632', '00691
 INSERT INTO members (id, accountId, name, postalAddress, defaultLocationId, emailAddress, pinCode, drivingLicenceNumber, homePhoneNumber, mobilePhoneNumber, businessPhoneNumber, faxPhoneNumber)
 VALUES (2, 2, 'Andrea Öfeli', NULL, 2, 'andreaoefeli@bluewin.ch', '273840', '008514035212', NULL, NULL, NULL, NULL);
 INSERT INTO members (id, accountId, name, postalAddress, defaultLocationId, emailAddress, pinCode, drivingLicenceNumber, homePhoneNumber, mobilePhoneNumber, businessPhoneNumber, faxPhoneNumber)
-VALUES
-  (3, 3, 'Steven Mountain', NULL, 1, 'steve@mountain-engineering.ch', '324911', '030290735920', NULL, NULL, NULL, NULL);
+VALUES (3, 3, 'Steven Mountain', NULL, 1, 'steve@mountain-engineering.ch', '324911', '030290735920', NULL, NULL, NULL, NULL);
 INSERT INTO members (id, accountId, name, postalAddress, defaultLocationId, emailAddress, pinCode, drivingLicenceNumber, homePhoneNumber, mobilePhoneNumber, businessPhoneNumber, faxPhoneNumber)
 VALUES (4, 3, 'Michael Mayo', NULL, 1, 'michi.mayo@fh-hwz.ch', '007123', '000274032525', NULL, NULL, NULL, NULL);
 
