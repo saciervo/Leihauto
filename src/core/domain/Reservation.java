@@ -57,7 +57,17 @@ public class Reservation {
         this.endDate = endDate;
     }
 
-    public void save() {
+    @Override
+    public String toString() {
+        String item = String.format("%s bis %s - %s (%s)",
+                AppSettings.DISPLAY_DATE_FORMAT.format(getStartDate()),
+                AppSettings.DISPLAY_DATE_FORMAT.format(getEndDate()),
+                getMember().getName(),
+                getCar().getName());
+        return item;
+    }
+
+    public void create() {
         try (DatabaseContext db = new DatabaseContext()) {
             db.execute("INSERT INTO reservations (carId, memberId, startDate, endDate) VALUES (?, ?, ?, ?)",
                     Integer.toString(getCar().getCarId()),

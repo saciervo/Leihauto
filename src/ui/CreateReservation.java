@@ -12,8 +12,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -102,7 +100,7 @@ public class CreateReservation {
                     reservation.setCar(car);
                     reservation.setStartDate(startDate);
                     reservation.setEndDate(endDate);
-                    reservation.save();
+                    reservation.create();
                     ReservationBookedDialog.showDialog();
                     frame.dispose();
                 } else {

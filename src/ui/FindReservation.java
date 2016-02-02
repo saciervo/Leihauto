@@ -20,7 +20,6 @@ public class FindReservation {
 
     private List<Member> members;
     private List<Car> cars;
-    private HashMap<Integer, String> listItems;
 
     public FindReservation() {
         filterButton.addActionListener(e -> {
@@ -70,21 +69,14 @@ public class FindReservation {
             carComboBox.addItem(car.getName());
         }
 
+        ListModel model = new DefaultListModel<Reservation>();
+        reservationsList = new JList(model);
         loadReservations(Reservation.findAll());
     }
 
     private void loadReservations(List<Reservation> reservations) {
-        listItems = new HashMap<>();
-        for (Reservation reservation : reservations) {
-            String item = String.format("%s bis %s - %s (%s)",
-                    AppSettings.DISPLAY_DATE_FORMAT.format(reservation.getStartDate()),
-                    AppSettings.DISPLAY_DATE_FORMAT.format(reservation.getEndDate()),
-                    reservation.getMember().getName(),
-                    reservation.getCar().getName());
-            listItems.put(reservation.getId(), item);
-        }
-
-        reservationsList = new JList(listItems.values().toArray());
+        reservationsList.setListData(reservations.toArray(new Reservation[reservations.size()]));
         reservationsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        reservationsList.updateUI();
     }
 }
